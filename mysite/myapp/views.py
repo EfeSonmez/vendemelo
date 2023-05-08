@@ -14,3 +14,10 @@ def products(request):
     }
     return render(request, 'myapp/index.html',context)
 
+def product_detail(request,id):
+    product = Product.objects.get(id=id)               ## Product id
+    context={
+        'product':product
+    }
+    return render(request, 'myapp/detail.html',context)                 # return HttpResponse('The product id is '+ str(id)) ctrl k c
+
