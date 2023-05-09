@@ -1,18 +1,29 @@
+{% extends 'myapp/base.html' %}
+
 {% load static %}
+   
+{% block content %}
 
-<html> 
-    <head>
-      <link rel="stylesheet" href="{% static 'myapp/style.css' %} ">
-    </head>
-    <body>
+  <!--Site hero starts here-->
+  <main class="mat-10 mx-auto max-w-7xl px-4">
+    <div>
+      <h1>
+        <span>Premium Products</span>
+        <span>Non-premium Prices</span>
+      </h1>
+    </div>
+  </main>
 
-        <h1>Products are here</h1>
+   <!--Site hero ends here-->
+
+
         {% for product in products %}
         
           <a href="{% url 'myapp:product_detail' product.id %}">
            {{product.name}} -> {{product.price}} -> {{product.desc}} <br> 
+           <img src="{{product.image.url}}" alt="">
           </a>
         {% endfor %}
-    </body>  
+     {% endblock %}
+  
 
-</html>
