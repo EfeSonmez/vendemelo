@@ -1,0 +1,38 @@
+
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<h1 class="text-2xl font-bold m-10">✚Add Product</h1>
+
+
+<form class="w-3/5 bg-white shadow-md m-10 px-8 py-8" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="">Product Name</label>
+        <input class="shadow appearance-none border rounded py-2 px-3 mr-10" placeholder="Iphone" type="text" name="name" id="name">
+
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="">Price</label>
+        <input class="shadow appearance-none border rounded py-2 px-3 mr-10"  placeholder="799" type="text" name="price" id="price">
+
+    </div>
+    
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="">Product Description</label>
+        <input class="shadow appearance-none border rounded py-2 px-3 mr-10"  placeholder="" type="text" name="desc" id="desc">
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="">Product Image</label>
+        <input class="py-2 mr-10 text-gray-700" type="file" accept="image/*" name="upload" id="upload">
+    </div>
+    <div class="mb-4 ">
+        <input class="hover:bg-green-700 bg-green-500 text-white py-2 px-4 mr-10" type="submit" name="Add Product" value="Add Product" id="">
+    </div>
+    
+
+</form>
+
+
+{% endblock %}
