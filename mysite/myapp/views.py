@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Product
+from django.contrib.auth.decorators import login_required
 # from django.utils.datastructures import MultiValueDictKeyError
 # Create your views here.
 
@@ -22,13 +23,15 @@ def product_detail(request,id):
     }
     return render(request, 'myapp/detail.html',context)                 # return HttpResponse('The product id is '+ str(id)) ctrl k c
 
+@login_required
 def add_product(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         price = request.POST.get('price')
         desc = request.POST.get('desc')
         image = request.FILES['upload']
-        product = Product(name=name, price=price, desc=desc, image=image)
+        seller_name = request.user
+        product = Product(name=name, price=price, desc=desc, image=image, seller_name=seller_name)
         product.save()
     return render(request, 'myapp/addproduct.html')
 

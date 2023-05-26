@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import User
+from django.contrib.auth.models import User
 from django import forms
 
 
@@ -18,6 +18,6 @@ class Meta:
 def save(self,commit=True):
     user = super(NewUserForm,self).save(commit=False)
     user.email = self.cleaned_data['email']
-    if commit==True:
+    if commit:
        user.save()
     return user
