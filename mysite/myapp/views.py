@@ -2,27 +2,34 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Product
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
-# from django.utils.datastructures import MultiValueDictKeyError
-# Create your views here.
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+
+#CBW - ListView for product listing
 
 def index(request):
-    return HttpResponse("hello world")
+    return HttpResponse("")
 
-
-# def products(request): 
-#     products = Product.objects.all()
-#     context = { 
-#         'products':products
-#     }
-#     return render(request, 'myapp/index.html',context)
-
-#CBW - ListView for product detail
+def products(request): 
+    products = Product.objects.all()
+    context = { 
+        'products':products
+    }
+    return render(request, 'myapp/index.html',context)
 
 class ProductListView(ListView):
     model = Product 
     template_name = 'myapp/index.html'
     context_object_name = 'products'
+
+
+#CBW - DetailView for product detail
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'myapp/detail.html'
+    context_object_name = 'product'
 
 def product_detail(request,id):
     product = Product.objects.get(id=id)               ## Product id
@@ -43,6 +50,13 @@ def add_product(request):
         product.save()
     return render(request, 'myapp/addproduct.html')
 
+# CBW FOR CREATING PRODUCT
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['name','price','desc','image','seller_name']
+    
+
 def update_product(request,id):
     product = Product.objects.get(id=id)
     if request.method == 'POST':
@@ -57,6 +71,11 @@ def update_product(request,id):
     }
     return render(request, 'myapp/updateproduct.html', context)
 
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ['name','price','desc','image','seller_name']
+    template_name_suffix = '_update_form'  
+
 def delete_product(request,id):
     product = Product.objects.get(id=id)
     if request.method == 'POST':
@@ -66,6 +85,11 @@ def delete_product(request,id):
         'product':product,
     }
     return render (request, 'myapp/delete.html', context)
+
+#CBW delete
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('myapp:products')
 
 def my_listings(request):
     products = Product.objects.filter(seller_name=request.user)

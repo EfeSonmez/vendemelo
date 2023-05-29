@@ -1,10 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 # Create your models here.
 
 class Product(models.Model):
     def __str__(self):
         return self.name
+    
+    # when a change is made in product model redirect to products
+    def get_absolute_url(self):
+        return reverse("myapp:products")
+    
     
     #user = models.OneToOneField(User, on_delete=models.CASCADE)
     seller_name = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
