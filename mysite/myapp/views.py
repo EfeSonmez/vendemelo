@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Product
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView
 # from django.utils.datastructures import MultiValueDictKeyError
 # Create your views here.
 
@@ -9,12 +10,19 @@ def index(request):
     return HttpResponse("hello world")
 
 
-def products(request): 
-    products = Product.objects.all()
-    context = { 
-        'products':products
-    }
-    return render(request, 'myapp/index.html',context)
+# def products(request): 
+#     products = Product.objects.all()
+#     context = { 
+#         'products':products
+#     }
+#     return render(request, 'myapp/index.html',context)
+
+#CBW - ListView for product detail
+
+class ProductListView(ListView):
+    model = Product 
+    template_name = 'myapp/index.html'
+    context_object_name = 'products'
 
 def product_detail(request,id):
     product = Product.objects.get(id=id)               ## Product id
@@ -58,3 +66,10 @@ def delete_product(request,id):
         'product':product,
     }
     return render (request, 'myapp/delete.html', context)
+
+def my_listings(request):
+    products = Product.objects.filter(seller_name=request.user)
+    context = {
+        'products':products,
+    }
+    return render(request, 'myapp/mylistings.html',context)
