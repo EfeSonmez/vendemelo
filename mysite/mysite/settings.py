@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+from django.core.management.utils import get_random_secret_key
+import dj_database_url
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,17 +24,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-51^yiqyb9fj(^dl65gasgx0aqiqrvve2fw8)1t#huww8bagg7-"
+#SECRET_KEY = "django-insecure-51^yiqyb9fj(^dl65gasgx0aqiqrvve2fw8)1t#huww8bagg7-"
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+
+DEBUG = os.getenv("DEBUG", "False") == "True"
+
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 
 if DEBUG == True:
     STRIPE_PUBLISHABLE_KEY = 'pk_test_51NDf2BIJ99irUu0dLlsAxCoQzujo89BusMXUl9gAQIaUh6ztGwKthoKwMfEzJKY9HhcN90xufoyM3SwAQm4bE1LF00UGcDRFtm'
     STRIPE_SECRET_KEY = 'sk_test_51NDf2BIJ99irUu0diU623hKBloYghz0MK2MLBWz9hMMn592S9i0jQsqjjcRQkFBPbnV1Ne0j1qt2jEf88fNpL16t00OgCqMc6P'
     
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 
 # Application definition
@@ -80,12 +90,26 @@ WSGI_APPLICATION = "mysite.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+if DEVELOPMENT_MODE is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
+elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if os.getenv("DATABASE_URL", None) is None:
+        raise Exception("DATABASE_URL environment variable not defined")
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    }
 
 
 # Password validation
@@ -123,6 +147,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
