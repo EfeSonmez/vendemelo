@@ -160,4 +160,4 @@ MEDIA_URL = '/media/'
 LOGIN_REDIRECT_URL = 'myapp:products'
 LOGIN_URL = 'users:login'
 
-GITHUB_TOKEN = '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'
+#GITHUB_TOKEN = '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'
